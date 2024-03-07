@@ -143,20 +143,21 @@ def extract(productlines, products, offices, employees, customers, payments, ord
     return transform(df_used)
 
 def transform(df_used):
-    # df_used = extract()
     df_transform = df_used
 
-    df_transform = df_transform.drop(columns=['state', 'productCode', 'textDescription', 'htmlDescription', 'image', 'comments', 'checkNumber', 'phone', 'addressLine1', 'addressLine2'])
+    df_transform = df_transform.drop(columns=['state', 'productCode', 'textDescription', 'htmlDescription', 
+                                              'image', 'comments', 'checkNumber', 'phone', 'addressLine1', 'addressLine2'])
     df_transform = df_transform.dropna(subset=df_transform.columns.difference(['shippedDate']))
     df_transform['shippedDate'] = pd.to_datetime(df_transform['shippedDate'], errors='coerce')
-    df_transform[['orderDate', 'requiredDate', 'paymentDate']] = df_transform[['orderDate', 'requiredDate', 'paymentDate']].apply(pd.to_datetime, format='%Y-%m-%d')
-    df_transform[['buyPrice', 'MSRP', 'priceEach', 'amount', 'creditLimit']] = df_transform[['buyPrice', 'MSRP', 'priceEach', 'amount', 'creditLimit']].astype('float64')
+    df_transform[['orderDate', 'requiredDate', 'paymentDate']] = df_transform[['orderDate', 
+                                                                               'requiredDate', 'paymentDate']].apply(pd.to_datetime, format='%Y-%m-%d')
+    df_transform[['buyPrice', 'MSRP', 'priceEach', 'amount', 'creditLimit']] = df_transform[['buyPrice', 'MSRP', 'priceEach', 
+                                                                                             'amount', 'creditLimit']].astype('float64')
     df_transform['quantityInStock'] = df_transform['quantityInStock'].astype('int64')
 
     return load(df_transform)
 
 def load(df_transform):
-    # df_transform = transform()
     dir = os.getcwd()
     path = os.path.join(dir, 'cleaned_data.csv')
     df_transform.to_csv(path, index=False)
